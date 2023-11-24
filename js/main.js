@@ -87,14 +87,25 @@ function createProduct() {
 
   if (mood === 'create')
   {
-    getTotal();
-    if (newProduct.count > 1) {
-      for (let i = 0; i < newProduct.count; i++) {
+    if
+    (name.value 
+    && price.value && taxes.value
+    && ads.value && count.value
+    && category.value && newProduct.count <= 100)
+    {
+      getTotal();
+      if (newProduct.count > 1) {
+        for (let i = 0; i < newProduct.count; i++) {
+          dataProducts.push(newProduct);
+        }
+      }
+      else{
         dataProducts.push(newProduct);
       }
+      clearInputs();
     }
-    else{
-      dataProducts.push(newProduct);
+    else {
+      alert('missing inputs');
     }
   }
   else
@@ -108,7 +119,6 @@ function createProduct() {
 
   localStorage.setItem('products', JSON.stringify(dataProducts));
 
-  clearInputs();
   showData();
 }
 
@@ -167,7 +177,7 @@ showData();
 /* delete function */
 function deleteProduct(i) {
   dataProducts.splice(i, 1);
-  localStorage.product = JSON.stringify(dataProducts);
+  localStorage.setItem('products', JSON.stringify(dataProducts));
   showData();
 }
 
@@ -199,21 +209,24 @@ function updateProduct(i) {
 let searchMood = 'title';
 
 function searchBtn(id) {
-  search.focus();
-
+  
   if (id === 'search-title') {
     searchMood = 'title';
   } else {
     searchMood = 'category';
   }
-
+  search.placeholder = 'Search By ' + searchMood;
+  search.focus();
+  search.value = '';
+  showData();
 }
 
 function searchData(value) {
   let tbody = document.getElementById('tbody');
   let table = '';
-  if (searchMood === 'title') {
-    for(let i = 0; i < dataProducts.length; i++){
+
+  for(let i = 0; i < dataProducts.length; i++){
+    if (searchMood === 'title') {
       if(dataProducts[i].name.includes(value.toLowerCase())){
         table += `
           <tr>
@@ -231,12 +244,11 @@ function searchData(value) {
         `;
       }
     }
-  } else {
-    for(let i = 0; i < dataProducts.length; i++){
+    else {
       if(dataProducts[i].category.includes(value.toLowerCase())){
         table += `
-          <tr>
-            <td>${[i+1]}</td>
+        <tr>
+        <td>${[i+1]}</td>
             <td>${dataProducts[i].name}</td>
             <td>${dataProducts[i].price}</td>
             <td>${dataProducts[i].taxes}</td>
